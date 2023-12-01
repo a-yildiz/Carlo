@@ -1,4 +1,5 @@
-using CSV, DataFrames
+using CSV
+using DataFrames: DataFrame, nrow
 using ProgressBars: tqdm
 using Statistics: mean, median, std
 

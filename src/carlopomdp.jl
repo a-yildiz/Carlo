@@ -20,7 +20,7 @@ end
     dt::Float64 = 0.1
     oprob::Float64 = 0.9
     discount::Float64 = 0.95
-    speed_limit::Float64 = 7.0  # [m/s]
+    speed_limit::Float64 = 9999.0  # [m/s]   # TODO: Change this back to 7 m/s
 
     # Ego goes from south to west
     # ego_box_space::AbstractArray = union(get_box_centroids(bottom_left=[60,50], top_right=[65,65], spacing=5), get_box_centroids(bottom_left=[50,60], top_right=[65,65], spacing=5))
@@ -138,7 +138,7 @@ end
 function POMDPs.states(pomdp::CarloPOMDP)
     ego = [4, 8, 6, 5, 2]
     rival = collect(1:8)
-    rival_vel = [:within_limit, :above_limit]
+    rival_vel = [:within_limit]   # TODO: Change this back to [:within_limit, :above_limit]
     rival_itn = [:left, :right, :straight]
     results = Iterators.product([ego, rival, rival_vel, rival_itn]...) |> collect |> vec
     return [CarloDiscreteState(item...) for item in results]
@@ -190,6 +190,8 @@ function POMDPs.observation(pomdp::CarloPOMDP, sp::CarloDiscreteState)
     @warn "Not supposed to have landed here (POMDPs.observation)"
     return nothing   # Will be overwritten from learned from data
 end
+
+POMDPs.obsindex(pomdp::CarloPOMDP, o::CarloDiscreteState) = findfirst(x->flatten(x)==flatten(o), POMDPs.observations(pomdp))
 
 
 ### Rewards ###
